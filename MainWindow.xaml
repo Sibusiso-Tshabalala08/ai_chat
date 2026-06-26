@@ -1,0 +1,495 @@
+﻿<Window x:Class="demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:demo"
+        mc:Ignorable="d"
+        Title="AI Cybersecurity Chatbot" Height="450" Width="800"
+        MinHeight="450" MinWidth="800">
+
+    <!-- Outer container grid that holds all three page grids -->
+    <Grid>
+
+        <!-- 
+            HOME GRID
+            This is the first page the user sees when they launch the app.
+            It shows the logo, a welcome message, and a proceed button.
+            Visible by default on startup.
+        -->
+        <Grid x:Name="home_grid" Visibility="Visible" Background="#080C1E">
+
+            <!-- App logo displayed at the top center of the home page -->
+            <Image 
+                Source="/cybersecurity.jpeg" 
+                Height="200"
+                Width="300"
+                Margin="0,0,0,200"/>
+
+            <!-- Welcome message shown below the logo -->
+            <TextBlock
+                Text="Welcome to AI Cybersecurity Chatbot"
+                Height="20"
+                Width="270"
+                TextAlignment="Center"
+                Margin="0,30,0,0"
+                FontFamily="Segoe UI"
+                FontSize="13"
+                FontWeight="Bold"
+                Foreground="#00BFFF"/>
+
+            <!-- 
+                Proceed button that navigates the user to the username page
+                Calls the proceed event handler in MainWindow.xaml.cs
+            -->
+            <Button 
+                Height="60"
+                Width="300"
+                Margin="0,200,0,0"
+                Content="Proceed"
+                Click="proceed"
+                Background="#0A1A3A"
+                Foreground="#00BFFF"
+                FontFamily="Segoe UI"
+                FontSize="13"
+                FontWeight="Bold"
+                BorderBrush="#00BFFF"
+                BorderThickness="1"
+                Cursor="Hand"/>
+
+        </Grid>
+
+
+        <!-- 
+            USERNAME GRID
+            This is the second page where the user enters their username.
+            It is hidden by default and only shown after clicking Proceed.
+            Contains an input field, error message, and submit button.
+        -->
+        <Grid x:Name="username_grid" Visibility="Hidden" Background="#080C1E">
+
+            <!-- App logo shown again on the username page for consistency -->
+            <Image 
+                Source="/cybersecurity.jpeg" 
+                Height="200"
+                Width="300"
+                Margin="0,0,0,200"/>
+
+            <!-- Instruction label telling the user what to do -->
+            <TextBlock
+                Text="Please enter username"
+                Height="20"
+                Width="270"
+                TextAlignment="Justify"
+                Margin="0,30,0,0"
+                FontFamily="Segoe UI"
+                FontSize="13"
+                FontWeight="Bold"
+                Foreground="#00BFFF"/>
+
+            <!-- Text input where the user types their username -->
+            <TextBox
+                Height="40"
+                Width="270"
+                TextAlignment="Center"
+                Margin="0,100,0,0"
+                FontFamily="Segoe UI"
+                FontSize="13"
+                x:Name="usernames_input"
+                Background="#0A1A3A"
+                Foreground="#C8DCFF"
+                CaretBrush="#00BFFF"
+                BorderBrush="#00BFFF"
+                BorderThickness="1"/>
+
+            <!-- 
+                Error message shown only when user tries to submit an empty username
+                Hidden by default - toggled visible in MainWindow.xaml.cs submit_name method
+            -->
+            <TextBlock
+                x:Name="error_text"
+                Text="Please enter a username to continue..."
+                Height="20"
+                Width="270"
+                TextAlignment="Justify"
+                Margin="0,180,0,0"
+                Foreground="#FF4C6A"
+                FontFamily="Segoe UI"
+                FontSize="12"
+                Visibility="Hidden"/>
+
+            <!-- 
+                Submit button that saves the username and navigates to the chat page
+                Calls the submit_name event handler in MainWindow.xaml.cs
+            -->
+            <Button 
+                Height="40"
+                Width="270"
+                Margin="0,250,0,0"
+                Content="Submit Username"
+                Click="submit_name"
+                Background="#0A1A3A"
+                Foreground="#00BFFF"
+                FontFamily="Segoe UI"
+                FontSize="13"
+                FontWeight="Bold"
+                BorderBrush="#00BFFF"
+                BorderThickness="1"
+                Cursor="Hand"/>
+
+        </Grid>
+
+
+        <!--
+            MAIN GRID
+            This is the main application area shown after the username is submitted.
+            It contains a persistent navigation bar across the top, plus four
+            switchable views underneath it: Chat, Tasks, Quiz and Activity Log.
+            Only one view is visible at a time - the nav buttons toggle them.
+        -->
+        <Grid x:Name="main_grid" Visibility="Hidden" Background="#080C1E">
+
+            <!--
+                NAVIGATION BAR
+                Pinned to the top of the window. Lets the user jump between
+                the chatbot conversation and the three new Part 3 features
+                without losing their place. Always visible once logged in.
+            -->
+            <Border
+                x:Name="nav_bar"
+                Height="48"
+                VerticalAlignment="Top"
+                Background="#0A1A3A"
+                BorderBrush="#1E64DC"
+                BorderThickness="0,0,0,1"
+                Panel.ZIndex="10">
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+
+                    <Button
+                        x:Name="nav_chat_btn"
+                        Content="Chat"
+                        Click="show_chat_view"
+                        Height="34" Width="100" Margin="0,0,6,0"
+                        Background="#0A1A3A" Foreground="#00BFFF"
+                        FontFamily="Segoe UI" FontSize="12" FontWeight="Bold"
+                        BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+                    <Button
+                        x:Name="nav_tasks_btn"
+                        Content="Tasks"
+                        Click="show_tasks_view"
+                        Height="34" Width="100" Margin="0,0,6,0"
+                        Background="#0A1A3A" Foreground="#00BFFF"
+                        FontFamily="Segoe UI" FontSize="12" FontWeight="Bold"
+                        BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+                    <Button
+                        x:Name="nav_quiz_btn"
+                        Content="Quiz"
+                        Click="show_quiz_view"
+                        Height="34" Width="100" Margin="0,0,6,0"
+                        Background="#0A1A3A" Foreground="#00BFFF"
+                        FontFamily="Segoe UI" FontSize="12" FontWeight="Bold"
+                        BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+                    <Button
+                        x:Name="nav_log_btn"
+                        Content="Activity Log"
+                        Click="show_log_view"
+                        Height="34" Width="130" Margin="0,0,6,0"
+                        Background="#0A1A3A" Foreground="#00BFFF"
+                        FontFamily="Segoe UI" FontSize="12" FontWeight="Bold"
+                        BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+                    <TextBlock
+                        x:Name="nav_username_label"
+                        Text=""
+                        Foreground="#64A0FF"
+                        FontFamily="Segoe UI"
+                        FontSize="12"
+                        VerticalAlignment="Center"
+                        Margin="20,0,0,0"/>
+
+                </StackPanel>
+            </Border>
+
+
+            <!--
+                CHAT VIEW
+                The original Part 1/Part 2 conversation interface. Pushed down
+                by Margin="0,48,0,0" so it sits below the nav bar. Visible by
+                default whenever the user logs in.
+            -->
+            <Grid x:Name="chat_grid" Visibility="Visible" Margin="0,48,0,0">
+
+                <!--
+                    ListView that displays all chat messages between user and chatbot
+                    Messages are added dynamically as Border elements in the code behind
+                -->
+                <ListView
+                    x:Name="chats"
+                    Height="300"
+                    Margin="0,0,0,120"
+                    Background="#0A0E27"
+                    BorderBrush="#1E64DC"
+                    BorderThickness="1"
+                    Foreground="#C8DCFF"
+                    FontFamily="Segoe UI"
+                    FontSize="13"/>
+
+                <!--
+                    KeyDown added so pressing Enter sends the message
+                    TextChanged added to show or hide the placeholder hint
+                    Text input where the user types their cybersecurity question
+                -->
+                <TextBox
+                    x:Name="question"
+                    Height="50"
+                    Width="480"
+                    Margin="0,300,300,0"
+                    Background="#0A1A3A"
+                    Foreground="#C8DCFF"
+                    CaretBrush="#00BFFF"
+                    BorderBrush="#00BFFF"
+                    BorderThickness="1"
+                    FontFamily="Segoe UI"
+                    FontSize="13"
+                    KeyDown="question_KeyDown"
+                    TextChanged="question_TextChanged"/>
+
+                <!--
+                    Placeholder hint text overlaid on the question TextBox
+                    IsHitTestVisible="False" means clicks pass through it to the TextBox
+                    Hidden automatically when the user starts typing
+                -->
+                <TextBlock
+                    x:Name="placeholder_hint"
+                    Text="Ask me a cybersecurity question, or try 'add a task', 'start quiz', 'show activity log'..."
+                    IsHitTestVisible="False"
+                    Foreground="#4A6080"
+                    FontFamily="Segoe UI"
+                    FontSize="13"
+                    Height="50"
+                    Width="480"
+                    Margin="5,300,300,0"
+                    VerticalAlignment="Center"
+                    TextWrapping="Wrap"/>
+
+                <!--
+                    Send button that submits the user's question to the chatbot
+                    Calls the send event handler in MainWindow.xaml.cs
+                -->
+                <Button
+                    Height="50"
+                    Width="280"
+                    Margin="490,300,0,0"
+                    Content="Send"
+                    Click="send"
+                    Background="#0A1A3A"
+                    Foreground="#00BFFF"
+                    FontFamily="Segoe UI"
+                    FontSize="13"
+                    FontWeight="Bold"
+                    BorderBrush="#00BFFF"
+                    BorderThickness="1"
+                    Cursor="Hand"/>
+
+            </Grid>
+
+
+            <!--
+                TASKS VIEW (Part 3 / Task 1)
+                Lets the user add a cybersecurity task with an optional
+                reminder, and view/complete/delete their existing tasks.
+                Everything here is backed by the MySQL "tasks" table via
+                TaskAssistantDB.
+            -->
+            <Grid x:Name="tasks_grid" Visibility="Hidden" Margin="0,48,0,0">
+
+                <TextBlock
+                    Text="Cybersecurity Task Assistant"
+                    FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="#00BFFF"
+                    Margin="20,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                <!-- Input area for adding a new task -->
+                <StackPanel Orientation="Vertical" Margin="20,55,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="320">
+
+                    <TextBlock Text="Title" Foreground="#C8DCFF" FontFamily="Segoe UI" FontSize="12"/>
+                    <TextBox
+                        x:Name="task_title_input"
+                        Height="30" Margin="0,3,0,0"
+                        Background="#0A1A3A" Foreground="#C8DCFF" CaretBrush="#00BFFF"
+                        BorderBrush="#00BFFF" BorderThickness="1" FontFamily="Segoe UI" FontSize="13"/>
+
+                    <TextBlock Text="Description" Foreground="#C8DCFF" FontFamily="Segoe UI" FontSize="12" Margin="0,10,0,0"/>
+                    <TextBox
+                        x:Name="task_description_input"
+                        Height="55" Margin="0,3,0,0" TextWrapping="Wrap" AcceptsReturn="True"
+                        Background="#0A1A3A" Foreground="#C8DCFF" CaretBrush="#00BFFF"
+                        BorderBrush="#00BFFF" BorderThickness="1" FontFamily="Segoe UI" FontSize="13"/>
+
+                    <TextBlock Text="Reminder (e.g. 'tomorrow', 'in 3 days') - optional" Foreground="#C8DCFF" FontFamily="Segoe UI" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                    <TextBox
+                        x:Name="task_reminder_input"
+                        Height="30" Margin="0,3,0,0"
+                        Background="#0A1A3A" Foreground="#C8DCFF" CaretBrush="#00BFFF"
+                        BorderBrush="#00BFFF" BorderThickness="1" FontFamily="Segoe UI" FontSize="13"/>
+
+                    <Button
+                        Content="Add Task"
+                        Click="add_task_button_click"
+                        Height="35" Margin="0,15,0,0"
+                        Background="#0A1A3A" Foreground="#00BFFF"
+                        FontFamily="Segoe UI" FontSize="13" FontWeight="Bold"
+                        BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+                    <TextBlock
+                        x:Name="task_status_text"
+                        Text=""
+                        Foreground="#64A0FF" FontFamily="Segoe UI" FontSize="11"
+                        TextWrapping="Wrap" Margin="0,10,0,0"/>
+
+                </StackPanel>
+
+                <!-- List of the user's existing tasks, loaded from MySQL -->
+                <TextBlock
+                    Text="Your Tasks"
+                    FontFamily="Segoe UI" FontSize="13" FontWeight="Bold" Foreground="#00BFFF"
+                    Margin="360,15,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+
+                <ListView
+                    x:Name="tasks_list"
+                    Margin="360,45,20,20"
+                    Background="#0A0E27" BorderBrush="#1E64DC" BorderThickness="1"
+                    Foreground="#C8DCFF" FontFamily="Segoe UI" FontSize="12">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,3,0,3" Padding="8" CornerRadius="4" Background="#0A1A3A" BorderBrush="#1E64DC" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" Foreground="#00BFFF" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Description}" Foreground="#C8DCFF" TextWrapping="Wrap" FontSize="11" Margin="0,3,0,0"/>
+                                    <TextBlock Text="{Binding DisplayReminder}" Foreground="#64A0FF" FontSize="10" Margin="0,3,0,0"/>
+                                    <TextBlock Text="{Binding StatusText}" Foreground="#4A6080" FontSize="10" Margin="0,2,0,0"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                        <Button Content="Mark Complete" Tag="{Binding Id}" Click="task_complete_click" FontSize="10" Margin="0,0,8,0"
+                                                Background="#0A1A3A" Foreground="#00BFFF" BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+                                        <Button Content="Delete" Tag="{Binding Id}" Click="task_delete_click" FontSize="10"
+                                                Background="#0A1A3A" Foreground="#FF4C6A" BorderBrush="#FF4C6A" BorderThickness="1" Cursor="Hand"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </Grid>
+
+
+            <!--
+                QUIZ VIEW (Part 3 / Task 2)
+                Displays one cybersecurity question at a time with dynamically
+                generated answer buttons (4 for multiple-choice, 2 for
+                true/false), immediate feedback, and a running score.
+            -->
+            <Grid x:Name="quiz_grid" Visibility="Hidden" Margin="0,48,0,0">
+
+                <TextBlock
+                    Text="Cybersecurity Mini-Game"
+                    FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="#00BFFF"
+                    Margin="20,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                <TextBlock
+                    x:Name="quiz_progress_text"
+                    Text="Press Start Quiz to begin!"
+                    Foreground="#64A0FF" FontFamily="Segoe UI" FontSize="12"
+                    Margin="20,50,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                <TextBlock
+                    x:Name="quiz_score_text"
+                    Text=""
+                    Foreground="#64A0FF" FontFamily="Segoe UI" FontSize="12"
+                    Margin="0,50,20,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+                <TextBlock
+                    x:Name="quiz_question_text"
+                    Text=""
+                    Foreground="#C8DCFF" FontFamily="Segoe UI" FontSize="15" FontWeight="Bold"
+                    TextWrapping="Wrap" Margin="20,80,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+
+                <StackPanel
+                    x:Name="quiz_options_panel"
+                    Orientation="Vertical"
+                    Margin="20,140,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+
+                <TextBlock
+                    x:Name="quiz_feedback_text"
+                    Text=""
+                    TextWrapping="Wrap" Foreground="#00BFFF" FontFamily="Segoe UI" FontSize="13"
+                    Margin="20,265,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+
+                <Button
+                    x:Name="quiz_start_button"
+                    Content="Start Quiz"
+                    Click="quiz_start_click"
+                    Height="40" Width="200" Margin="20,0,0,20"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    Background="#0A1A3A" Foreground="#00BFFF"
+                    FontFamily="Segoe UI" FontSize="13" FontWeight="Bold"
+                    BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+                <Button
+                    x:Name="quiz_next_button"
+                    Content="Next Question"
+                    Click="quiz_next_click"
+                    Height="40" Width="200" Margin="0,0,20,20"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Background="#0A1A3A" Foreground="#00BFFF"
+                    FontFamily="Segoe UI" FontSize="13" FontWeight="Bold"
+                    BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"
+                    Visibility="Hidden"/>
+
+            </Grid>
+
+
+            <!--
+                ACTIVITY LOG VIEW (Part 3 / Task 4)
+                Shows the most recent actions the chatbot has taken. The
+                "Show Full History" button toggles between the last 10
+                actions and the complete session history.
+            -->
+            <Grid x:Name="log_grid" Visibility="Hidden" Margin="0,48,0,0">
+
+                <TextBlock
+                    Text="Activity Log"
+                    FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="#00BFFF"
+                    Margin="20,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                <ListView
+                    x:Name="log_list"
+                    Margin="20,55,20,60"
+                    Background="#0A0E27" BorderBrush="#1E64DC" BorderThickness="1"
+                    Foreground="#C8DCFF" FontFamily="Segoe UI" FontSize="12">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="4" Foreground="#C8DCFF"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Button
+                    x:Name="log_show_more_button"
+                    Content="Show Full History"
+                    Click="log_show_more_click"
+                    Height="35" Width="180" Margin="20,0,0,15"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    Background="#0A1A3A" Foreground="#00BFFF"
+                    FontFamily="Segoe UI" FontSize="12" FontWeight="Bold"
+                    BorderBrush="#00BFFF" BorderThickness="1" Cursor="Hand"/>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</Window>
